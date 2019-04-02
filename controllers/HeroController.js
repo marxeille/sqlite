@@ -18,7 +18,25 @@ export const createHero = (hero: Hero) => {
     }
 
     sqlite.transaction(tx => {
-      tx.executeSql("", [], () => {}, () => {});
+      tx.executeSql(
+        "INSERT INTO pet(name) VALUES (?)",
+        [hero.heroName],
+        (tx, results) => {
+          if (results.rowsAffected > 0) {
+            msg.result = true;
+            msg.message = "Created";
+          } else {
+            msg.result = false;
+            msg.message = "Failed";
+          }
+          resolve({ result: msg.result, message: msg.message });
+        },
+        error => {
+          msg.result = true;
+          msg.message = `${error.message}`;
+          resolve({ result: msg.result, message: msg.message });
+        }
+      );
     });
   });
 };
