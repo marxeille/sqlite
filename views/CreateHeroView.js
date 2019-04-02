@@ -1,15 +1,18 @@
 // In App.js in a new project
 
 import React from "react";
-import { View, TextInput, Button } from "react-native";
+import { View, TextInput, Button, ToastAndroid, Keyboard } from "react-native";
 import Hero from "../models/Hero";
 import styles from "../styles/styles";
+import Loading from "./Loading";
+import { createHero } from "../controllers/HeroController";
 
 export default class CreateHeroView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hero: new Hero()
+      hero: new Hero(),
+      isLoading: false
     };
     this.onCreateHero = this.onCreateHero.bind(this);
     this.changeName = this.changeName.bind(this);
@@ -17,17 +20,40 @@ export default class CreateHeroView extends React.Component {
 
   changeName = (name: string) => {
     let hero = this.state.hero;
-    hero.heroName = name;
-    this.setState(hero);
+    if (!hero) {
+      return;
+    }
+
+    if (name != "") {
+      hero.heroName = name;
+      this.setState({
+        hero
+      });
+    }
     console.log("on change to " + name);
   };
 
   onCreateHero = () => {
     console.log("created hero " + this.state.hero.heroName);
-    return true;
+    this.setState({
+      isLoading: true
+    });
+    createHero(this.state.hero)
+      .then(({ result, message }) => {
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+        if (result) {
+          console.log(result);
+          this.setState({ hero: new Hero() });
+          Keyboard.dismiss();
+        }
+      })
+      .catch(error => console.log(error));
   };
 
   render() {
+    if (this.state.isLoading) {
+      return <Loading />;
+    }
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <TextInput

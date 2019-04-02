@@ -33,4 +33,24 @@ const styles = StyleSheet.create({
     color: "white"
   }
 });
+
+export const loading = {
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white"
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10
+  },
+  results: {
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 30,
+    fontSize: 20
+  }
+};
 export default styles;
