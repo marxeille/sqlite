@@ -23,7 +23,6 @@ export const createHero = (hero: Hero) => {
         [hero.heroName],
         (tx, results) => {
           if (results.rowsAffected > 0) {
-            console.log(results);
             msg.result = true;
             msg.message = "Create new hero successfully!";
           } else {
@@ -73,16 +72,12 @@ export const updateHero = (hero: Hero) => {
       msg.message = "Invalid";
       resolve({ result: msg.result, message: msg.message });
     }
-
-    console.log(hero);
     db.transaction(tx => {
       tx.executeSql(
         "UPDATE pet SET name=? WHERE id=?",
         [hero.heroName, hero.heroId],
         (tx, results) => {
-          console.log(results);
           if (results.rowsAffected > 0) {
-            console.log(results);
             msg.result = true;
             msg.message = "Update new hero successfully!";
           } else {

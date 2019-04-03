@@ -17,7 +17,6 @@ import { updateHero } from "../controllers/HeroController";
 export default class UpdateHeroView extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.navigation.state.params.item);
     let hero = new Hero();
     hero.heroName = this.props.navigation.state.params.item.name;
     hero.heroId = this.props.navigation.state.params.item.id;
@@ -43,6 +42,7 @@ export default class UpdateHeroView extends React.Component {
   };
 
   onUpdateHero = () => {
+    const { params } = this.props.navigation.state;
     this.setState({
       isLoading: true
     });
@@ -51,6 +51,7 @@ export default class UpdateHeroView extends React.Component {
         ToastAndroid.show(message, ToastAndroid.SHORT);
         if (result) {
           if (this.state.event) this.state.event.emit("onUpdateHero");
+          params.initListHeroes();
           this.props.navigation.navigate("Home");
         }
       })

@@ -28,6 +28,10 @@ export default class HomeView extends React.Component {
     this.event.addListener("onDeleteHero", () => this.initListHeroes());
   }
 
+  componentWillUnmount() {
+    this.event.removeAllListeners();
+  }
+
   initListHeroes() {
     getAllHeroes()
       .then(({ result, message }) => {
@@ -36,7 +40,6 @@ export default class HomeView extends React.Component {
           let heroes = [];
           var len = result.length;
           for (let i = 0; i < len; i++) {
-            console.log(result.item(i));
             heroes.push(result.item(i));
           }
           this.setState({ heroes });
@@ -55,7 +58,8 @@ export default class HomeView extends React.Component {
         onPress={() =>
           this.props.navigation.navigate("UpdateHero", {
             item,
-            event: this.event
+            event: this.event,
+            initListHeroes: this.initListHeroes.bind(this)
           })
         }
         title="Update"
