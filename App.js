@@ -18,7 +18,7 @@
 
 // var SQLite = require("react-native-sqlite-storage");
 // let db = SQLite.openDatabase(
-//   { name: "a", createFromLocation: "~sqlite.db", location: "Library" },
+//   { name: "hero-db", createFromLocation: "~sqlite.db", location: "Library" },
 //   this.openCB,
 //   this.errorCB
 // );

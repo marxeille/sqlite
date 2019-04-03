@@ -23,6 +23,7 @@ export const createHero = (hero: Hero) => {
         [hero.heroName],
         (tx, results) => {
           if (results.rowsAffected > 0) {
+            console.log(results);
             msg.result = true;
             msg.message = "Create new hero successfully!";
           } else {
@@ -34,14 +35,33 @@ export const createHero = (hero: Hero) => {
         error => {
           msg.result = false;
           msg.message = `${error.message}`;
-          resolve({ result: msg.result, message: msg.message });
+          rejects({ result: msg.result, message: msg.message });
         }
       );
     });
   });
 };
 
-export function getAllHeroes() {}
+export function getAllHeroes() {
+  let msg = new Message();
+  return new Promise((resolve, rejects) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT * FROM pet",
+        [],
+        (tx, results) => {
+          msg.message = "All heroes are here.";
+          resolve({ result: results.rows, message: msg.message });
+        },
+        error => {
+          msg.result = false;
+          msg.message = `${error.message}`;
+          rejects({ result: msg.result, message: msg.message });
+        }
+      );
+    });
+  });
+}
 
 export function checkIfHeroExists() {}
 

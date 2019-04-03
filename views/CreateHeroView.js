@@ -42,7 +42,6 @@ export default class CreateHeroView extends React.Component {
       .then(({ result, message }) => {
         ToastAndroid.show(message, ToastAndroid.SHORT);
         if (result) {
-          console.log(result);
           this.setState({ hero: new Hero() });
           Keyboard.dismiss();
         }
