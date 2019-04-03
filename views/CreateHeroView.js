@@ -12,7 +12,8 @@ export default class CreateHeroView extends React.Component {
     super(props);
     this.state = {
       hero: new Hero(),
-      isLoading: false
+      isLoading: false,
+      event: this.props.navigation.state.params.event
     };
     this.onCreateHero = this.onCreateHero.bind(this);
     this.changeName = this.changeName.bind(this);
@@ -42,8 +43,8 @@ export default class CreateHeroView extends React.Component {
       .then(({ result, message }) => {
         ToastAndroid.show(message, ToastAndroid.SHORT);
         if (result) {
-          this.setState({ hero: new Hero() });
-          Keyboard.dismiss();
+          if (this.state.event) this.state.event.emit("onCreateHero");
+          this.props.navigation.navigate("Home");
         }
       })
       .catch(error => console.log(error));

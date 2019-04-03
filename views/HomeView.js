@@ -10,6 +10,7 @@ import {
   Keyboard
 } from "react-native";
 import { getAllHeroes } from "../controllers/HeroController";
+import { EventEmitter } from "events";
 
 export default class HomeView extends React.Component {
   constructor(props) {
@@ -17,9 +18,17 @@ export default class HomeView extends React.Component {
     this.state = {
       heroes: []
     };
+    this.event = new EventEmitter();
   }
 
   componentDidMount() {
+    this.initListHeroes();
+    this.event.addListener("onCreateHero", () => this.initListHeroes());
+    this.event.addListener("onUpdateHero", () => this.initListHeroes());
+    this.event.addListener("onDeleteHero", () => this.initListHeroes());
+  }
+
+  initListHeroes() {
     getAllHeroes()
       .then(({ result, message }) => {
         ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -27,6 +36,7 @@ export default class HomeView extends React.Component {
           let heroes = [];
           var len = result.length;
           for (let i = 0; i < len; i++) {
+            console.log(result.item(i));
             heroes.push(result.item(i));
           }
           this.setState({ heroes });
@@ -41,7 +51,17 @@ export default class HomeView extends React.Component {
   _renderItem = ({ item }) => (
     <View>
       <Text>{item.name}</Text>
-      <Text>Update</Text>
+      <Button
+        onPress={() =>
+          this.props.navigation.navigate("UpdateHero", {
+            item,
+            event: this.event
+          })
+        }
+        title="Update"
+        color="#841584"
+        accessibilityLabel="Click to create a new hero"
+      />
     </View>
   );
 
@@ -57,7 +77,11 @@ export default class HomeView extends React.Component {
         />
         <Button
           title="Create Hero"
-          onPress={() => this.props.navigation.navigate("CreateHeroView")}
+          onPress={() =>
+            this.props.navigation.navigate("CreateHeroView", {
+              event: this.event
+            })
+          }
         />
       </View>
     );

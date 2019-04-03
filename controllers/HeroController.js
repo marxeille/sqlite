@@ -65,6 +65,40 @@ export function getAllHeroes() {
 
 export function checkIfHeroExists() {}
 
-export const updateHero = () => {};
+export const updateHero = (hero: Hero) => {
+  return new Promise((resolve, rejects) => {
+    let msg = new Message();
+    if (!hero) {
+      msg.result = false;
+      msg.message = "Invalid";
+      resolve({ result: msg.result, message: msg.message });
+    }
+
+    console.log(hero);
+    db.transaction(tx => {
+      tx.executeSql(
+        "UPDATE pet SET name=? WHERE id=?",
+        [hero.heroName, hero.heroId],
+        (tx, results) => {
+          console.log(results);
+          if (results.rowsAffected > 0) {
+            console.log(results);
+            msg.result = true;
+            msg.message = "Update new hero successfully!";
+          } else {
+            msg.result = false;
+            msg.message = "Update new hero failed!";
+          }
+          resolve({ result: msg.result, message: msg.message });
+        },
+        error => {
+          msg.result = false;
+          msg.message = `${error.message}`;
+          rejects({ result: msg.result, message: msg.message });
+        }
+      );
+    });
+  });
+};
 
 export const deleteHero = () => {};
